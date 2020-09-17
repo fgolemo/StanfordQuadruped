@@ -1,4 +1,5 @@
 import os
+import random
 
 import pybullet
 import pybullet_data
@@ -24,15 +25,15 @@ REST_POS = HardwareInterface.parallel_to_serial_joint_angles(
 
 class PupperSim2:
     def __init__(
-        self,
-        xml_path=None,
-        debug=False,
-        gain_pos=0.125,
-        gain_vel=0.25,
-        max_torque=1,
-        g=-9.81,
-        start_standing=True,
-        img_size=(84, 84),
+            self,
+            xml_path=None,
+            debug=False,
+            gain_pos=0.125,
+            gain_vel=0.25,
+            max_torque=1,
+            g=-9.81,
+            start_standing=True,
+            img_size=(84, 84),
     ):
         """
 
@@ -181,14 +182,15 @@ class PupperSim2:
         return obj
 
     def add_stairs(
-        self,
-        no_steps=8,
-        step_width=1,
-        step_height=0.1,
-        step_depth=0.1,
-        offset=None,
-        color=(0.5, 0, 0.5),
-        random_color=False,
+            self,
+            no_steps=8,
+            step_width=0.5,
+            step_height=(0.1, 0.5),
+            step_depth=(0.1, 0.5),
+            offset=None,
+            color=(0.5, 0, 0.5),
+            random_color=False,
+            add_railing=False
     ) -> list:
         pos_x = 0
         pos_y = 0
@@ -204,20 +206,66 @@ class PupperSim2:
         positions = []
 
         orientation = self.p.getQuaternionFromEuler([0, 0, 0])
-        size = (step_depth / 2, step_width / 2, step_height / 2)
+        height_sum = 0
 
         # create steps boxes
         for step_idx in range(no_steps):
-            pos = (pos_x + step_depth / 2, pos_y, pos_z + size[2])
+            random_step_depth, random_step_height = random.uniform(step_depth[0], step_depth[1]), \
+                                                    random.uniform(step_height[0], step_height[1])
+
+            size = (random_step_depth / 2, step_width / 2, random_step_height / 2 + height_sum)
+
+            pos = (pos_x + random_step_depth / 2, pos_y, pos_z + size[2])
 
             positions.append(np.array(pos))
 
             step = self.create_box(pos, orientation, size, color, random_color)
             steps.append(step)
 
-            pos_x += step_depth
-            size = (size[0], size[1], size[2] + step_height / 2)
+            if add_railing:
 
+                for i in range(4):
+                    step_offset = (0, 0)
+                    if i == 0:
+                        step_offset = (0.5, 0.9)
+                    elif i == 1:
+                        step_offset = (-0.5, 0.9)
+                    elif i == 2:
+                        step_offset = (0.5, -0.9)
+                    elif i == 3:
+                        step_offset = (-0.5, -0.9)
+
+                    railing_size = (0.01, 0.01, 0.3)
+
+                    middle_step_pos = (pos_x + (random_step_depth / 2) - (railing_size[0] / 2), pos_y,
+                                   pos_z + size[2] * 2 + railing_size[2])
+
+                    railing_pos = (middle_step_pos[0] + step_offset[0] * (random_step_depth/2),
+                                   middle_step_pos[1] + step_offset[1] * (step_width/2),
+                                   middle_step_pos[2])
+
+                    railing = self.create_box(railing_pos, orientation, railing_size, color, random_color)
+
+                    # in order to create a fixing constraint between parent and child step,
+                    # you need to find a point where they touch.
+                    # import pdb; pdb.set_trace()
+                    railing_pos = np.array(railing_pos)
+                    pos = np.array(pos)
+
+                    center = (railing_pos + pos) / 2
+                    self.p.createConstraint(
+                        parentBodyUniqueId=step,
+                        parentLinkIndex=-1,
+                        childBodyUniqueId=railing,
+                        childLinkIndex=-1,
+                        jointType=self.p.JOINT_FIXED,
+                        jointAxis=(1, 1, 1),
+                        parentFramePosition=center - pos,
+                        childFramePosition=center - railing_pos,
+                    )
+
+            pos_x += random_step_depth
+            height_sum += random_step_height
         # connect the steps to each other
         for step_idx in range(no_steps - 1):
             step_1 = steps[step_idx]
@@ -275,7 +323,6 @@ class PupperSim2:
         )
         output_img = pybulletimage2numpy(img, self.img_size[0], self.img_size[1])
         return output_img
-
 
 # depth = 0.2, height = 0.2
 # pos 0.1, 0.1, size 0.1, 0.1, total height 0.2
