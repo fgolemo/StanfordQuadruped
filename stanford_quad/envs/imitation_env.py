@@ -10,7 +10,8 @@ from stanford_quad.sim.simulator2 import PupperSim2, FREQ_SIM
 from stanford_quad.envs.imitation_recordings import IMITATION_LIB
 
 CONTROL_FREQUENCY = 60
-RECORDINGS_PATH = "/Users/florian/dev/pyvicon/scripts/pupper-{}.hdf5"
+# RECORDINGS_PATH = "/Users/florian/dev/pyvicon/scripts/pupper-{}.hdf5"
+RECORDINGS_PATH = "/home/gberseth/playground/StanfordQuadruped/pupper-{}.hdf5"
 RESOLUTION = 48
 SIM_AGENT_COLOR = (0, 1, 1, 1)
 SIM_REF_COLOR = (1, 0, 1, 1)
@@ -110,7 +111,8 @@ class ImitationEnv(gym.Env):
         # to normalize to [-1,1]
         joint_states = np.array(self.sim_agent.get_joint_states()) / np.pi
         obs = list(joint_states) + list(orn) + list(vel)[:2]
-        return obs
+        img = self.getVisualState()
+        return [np.array(obs),np.array(img)]
 
     def reset(self):
         self.frame_idx = self.idx_start
@@ -161,6 +163,7 @@ class ImitationEnv(gym.Env):
 
         obs = self._get_obs()
         reward = self._calc_imitation_error(joints_agent, joints_reference)
+#         print (reward)
         done = False
         misc = {}
 
@@ -182,6 +185,21 @@ class ImitationEnv(gym.Env):
             img[segmap != 1] = 0
         return img
 
+    def getVisualState(self, mode='rgb_array'):
+        img = self._render_agent()
+#         print ("img.shape: ", img.shape)
+        img = np.mean(img, axis=-1, keepdims=True)
+        pos, orn, vel = self.sim_agent.get_pos_orn_vel()
+        img = np.concatenate((img.flatten(), vel), axis=-1) ## to grayscale
+        return img
+    
+    def getImitationVisualState(self, mode='rgb_array'):
+        img = self._render_ref()
+        img = np.mean(img, axis=-1, keepdims=True)
+        pos, orn, vel = self.sim_ref.get_pos_orn_vel()
+        img = np.concatenate((img.flatten(), vel), axis=-1) ## to grayscale
+        return img
+    
     def _render_agent(self):
         return self._render("sim_agent")
 
