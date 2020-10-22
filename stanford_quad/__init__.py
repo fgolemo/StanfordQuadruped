@@ -41,7 +41,7 @@ for headlessness in HEADLESSNESS:
                         f"gFact_{gait_fact}-"
                         f"RandomZRot_{random_rot}-{headlessness}-v0"
                     )
-                    print(name)
+                    # print(name)
                     register(
                         id=name,
                         entry_point="stanford_quad.envs:WalkingEnv",
