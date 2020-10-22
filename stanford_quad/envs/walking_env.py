@@ -110,6 +110,8 @@ class WalkingEnv(gym.Env):
     def sanitize_actions(self, actions):
         assert len(actions) == 12
 
+        actions = np.array(actions).astype(np.float32)
+
         if not self.incremental_action:
             scaled = actions * np.pi * self.action_scaling  # because 1/-1 corresponds to pi/-pi radians rotation
             if self.relative_action:
@@ -139,13 +141,13 @@ class WalkingEnv(gym.Env):
         # where N comes from the action_smoothing hyper-parameter
         self.action_smoothing.append(action_clean)
         action_agent = np.mean(self.action_smoothing, axis=0)
-        action_gait = controller_to_sim(self.gait.act(velocity_horizontal=(0.2, 0), normalized=True))
+        action_gait = controller_to_sim(self.gait.act(velocity_horizontal=(0.2, 0), normalized=False))
         action = self.gait_factor * action_gait + (1 - self.gait_factor) * action_agent
 
         # let's clip again just to be safe and within the boundaries of the expert
         action = np.clip(
             action,
-            np.max((self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower), axis=0),
+            np.max((self.joints_hard_limit_lower, action_gait + 0.2 * self.joints_hard_limit_lower), axis=0),
             np.min((self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper), axis=0),
         )
 

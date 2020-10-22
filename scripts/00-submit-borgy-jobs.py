@@ -9,7 +9,7 @@ with open("../list_of_environments.txt", "r") as f:
 
 lines = [line[:-1] if "\n" in line else line for line in lines]
 
-EXP_NO = 50
+EXP_NO = 52
 NO_SEEDS = 3
 ENV_STEPS = 1e6
 SB = 0

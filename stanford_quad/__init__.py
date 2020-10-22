@@ -53,6 +53,7 @@ for headlessness in HEADLESSNESS:
                             "action_scaling": action_scaling,
                             "action_smoothing": 1,
                             "random_rot": (0, 0, random_rot),
+                            "gait_factor": gait_fact,
                         },
                         max_episode_steps=120,
                     )
