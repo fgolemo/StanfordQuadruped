@@ -23,19 +23,22 @@ make_imitation_env("walk-forward")
 
 
 ACTION_TYPE = ["Relative", "Absolute", "Incremental"]
-ACTION_SMOOTHING = [1, 2, 3, 4]
+# ACTION_SMOOTHING = [1, 2, 3, 4]
 RANDOM_ROT = [0, 1, 10, 100]
-ACTION_SCALING = [1.0, 2.0, 4.0] + list(np.arange(0.05, 0.5, 0.05))
+ACTION_SCALING = [1.0, 2.0, 4.0] + list(np.arange(0.05, 0.56, 0.1))
+GAIT_FACTOR = [0.0, 0.2, 0.4, 0.6, 0.8, 0.95]
 
 for headlessness in HEADLESSNESS:
     for action_type in ACTION_TYPE:
-        for action_smoothing in ACTION_SMOOTHING:
-            for action_scaling in ACTION_SCALING:
-                for random_rot in RANDOM_ROT:
+        # for action_smoothing in ACTION_SMOOTHING:
+        for action_scaling in ACTION_SCALING:
+            for random_rot in RANDOM_ROT:
+                for gait_fact in GAIT_FACTOR:
                     name = (
                         f"Pupper-Walk-{action_type}-"
                         f"aScale_{action_scaling:.2}-"
-                        f"aSmooth_{action_smoothing}-"
+                        # f"aSmooth_{action_smoothing}-"
+                        f"gFact_{gait_fact}-"
                         f"RandomZRot_{random_rot}-{headlessness}-v0"
                     )
                     print(name)
@@ -48,7 +51,7 @@ for headlessness in HEADLESSNESS:
                             "relative_action": True if action_type == "Relative" else False,
                             "incremental_action": True if action_type == "Incremental" else False,
                             "action_scaling": action_scaling,
-                            "action_smoothing": action_smoothing,
+                            "action_smoothing": 1,
                             "random_rot": (0, 0, random_rot),
                         },
                         max_episode_steps=120,

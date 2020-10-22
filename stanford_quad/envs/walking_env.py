@@ -4,6 +4,9 @@ import gym
 from gym import spaces
 import numpy as np
 import matplotlib.pyplot as plt
+
+from stanford_quad.common.Utilities import controller_to_sim
+from stanford_quad.pupper.policy import HardPolicy
 from stanford_quad.sim.simulator2 import PupperSim2, FREQ_SIM
 
 CONTROL_FREQUENCY = 60  # Hz, the simulation runs at 240Hz by default and doing a multiple of that is easier
@@ -23,6 +26,7 @@ class WalkingEnv(gym.Env):
         random_rot=(0, 0, 0),
         reward_coefficients=(0.1, 1, 0),
         stop_on_flip=False,
+        gait_factor=0.0,
     ):
         """ Gym-compatible environment to teach the pupper how to walk
         
@@ -71,6 +75,11 @@ class WalkingEnv(gym.Env):
         self.random_rot = random_rot
         self.stop_on_flip = stop_on_flip
         self.current_action = np.array([0] * 12)
+        self.gait = None
+        assert 0 <= gait_factor <= 1
+        self.gait_factor = gait_factor
+        self.joints_hard_limit_lower = -np.pi + 0.001
+        self.joints_hard_limit_uppper = np.pi - 0.001
 
         # new reward coefficients
         self.rcoeff_ctrl, self.rcoeff_run, self.rcoeff_stable = reward_coefficients
@@ -85,6 +94,8 @@ class WalkingEnv(gym.Env):
 
         # this is used when self.incremental_action == True
         self.current_action = self.sim.get_rest_pos()
+
+        self.gait = HardPolicy()
 
         return self.get_obs()
 
@@ -107,7 +118,7 @@ class WalkingEnv(gym.Env):
         else:
             scaled = actions * self.incremental_angle + self.current_action
 
-        clipped = np.clip(scaled, -np.pi + 0.001, np.pi - 0.001)
+        clipped = np.clip(scaled, self.joints_hard_limit_lower, self.joints_hard_limit_uppper)
         self.current_action = np.copy(clipped)
         return clipped
 
@@ -127,7 +138,18 @@ class WalkingEnv(gym.Env):
         # time. Instead of feeding the simulator the action directly, we take the mean of the last N actions,
         # where N comes from the action_smoothing hyper-parameter
         self.action_smoothing.append(action_clean)
-        self.sim.action(np.mean(self.action_smoothing, axis=0))
+        action_agent = np.mean(self.action_smoothing, axis=0)
+        action_gait = controller_to_sim(self.gait.act(velocity_horizontal=(0.2, 0), normalized=True))
+        action = self.gait_factor * action_gait + (1 - self.gait_factor) * action_agent
+
+        # let's clip again just to be safe and within the boundaries of the expert
+        action = np.clip(
+            action,
+            max(self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower),
+            min(self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper),
+        )
+
+        self.sim.action(action)
 
         for _ in range(self.sim_steps):
             self.sim.step()
