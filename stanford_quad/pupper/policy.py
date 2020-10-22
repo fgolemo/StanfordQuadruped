@@ -8,7 +8,7 @@ from stanford_quad.pupper.Kinematics import four_legs_inverse_kinematics
 
 
 class HardPolicy:
-    def __init__(self, fps=60, warmup=0) -> None:
+    def __init__(self, fps=60, warmup=0, dbg=False) -> None:
         super().__init__()
 
         self.fps = fps
@@ -29,11 +29,12 @@ class HardPolicy:
         self.controller.run(self.state, command)
         self.command = Command()  # zero it out
 
-        print("Summary of gait parameters:")
-        print("overlap time: ", self.config.overlap_time)
-        print("swing time: ", self.config.swing_time)
-        print("z clearance: ", self.config.z_clearance)
-        print("x shift: ", self.config.x_shift)
+        if dbg:
+            print("Summary of gait parameters:")
+            print("overlap time: ", self.config.overlap_time)
+            print("swing time: ", self.config.swing_time)
+            print("z clearance: ", self.config.z_clearance)
+            print("x shift: ", self.config.x_shift)
         self.step = 0
 
     def act(self, velocity_horizontal=(0, 0), yaw_rate=0, normalized=False):

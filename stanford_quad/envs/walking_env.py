@@ -78,8 +78,8 @@ class WalkingEnv(gym.Env):
         self.gait = None
         assert 0 <= gait_factor <= 1
         self.gait_factor = gait_factor
-        self.joints_hard_limit_lower = -np.pi + 0.001
-        self.joints_hard_limit_uppper = np.pi - 0.001
+        self.joints_hard_limit_lower = (-np.pi + 0.001) * np.ones(12)
+        self.joints_hard_limit_uppper = (np.pi - 0.001) * np.ones(12)
 
         # new reward coefficients
         self.rcoeff_ctrl, self.rcoeff_run, self.rcoeff_stable = reward_coefficients
@@ -145,8 +145,8 @@ class WalkingEnv(gym.Env):
         # let's clip again just to be safe and within the boundaries of the expert
         action = np.clip(
             action,
-            np.max(self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower),
-            np.min(self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper),
+            np.max((self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower), axis=0),
+            np.min((self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper), axis=0),
         )
 
         self.sim.action(action)
@@ -184,3 +184,6 @@ class WalkingEnv(gym.Env):
 
         img, _ = self.sim.take_photo()
         return img
+
+
+# (export SEEDBASE=0; export EXP=50; for ((i = 0; i < 3; i++)); do borgy submit -i images.borgy.elementai.net/fgolemo/gym:v4 --mem 32 --gpu-mem 12 --gpu 1 --cuda-version 10.0 -H -- zsh -c "cd /root && source ./.zshrc && export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mnt/home/fgolemo/.mujoco/mujoco200/bin && cd ~/dev/StanfordQuadruped/ && pip install -e '.[sim]' && cd ~/dev/pytorch-a2c-ppo-acktr-gail && pip install --upgrade numpy && pip install wandb moviepy imageio efficientnet-pytorch pybullet && python main.py --custom-gym 'stanford_quad' --env-name 'Pupper-Walk-Absolute-aScale_1.0-gFact_0.0-RandomZRot_0-Headless-v0' --algo ppo --use-gae --log-interval 1 --num-steps 2040 --num-processes 1 --lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --ppo-epoch 10 --num-mini-batch 32 --gamma 0.99 --gae-lambda 0.95 --frame-stacc 1 --num-env-steps 1000000 --use-linear-lr-decay --wandb pupper-walk2 --save-interval 10 --gif-interval 50 --seed $((i+SEEDBASE)) > ~/borgy/$((EXP))-pupperwalk-exp$((EXP))-$((i+SEEDBASE)).log"; done)
