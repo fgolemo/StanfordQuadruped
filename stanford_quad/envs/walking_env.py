@@ -145,8 +145,8 @@ class WalkingEnv(gym.Env):
         # let's clip again just to be safe and within the boundaries of the expert
         action = np.clip(
             action,
-            max(self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower),
-            min(self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper),
+            np.max(self.joints_hard_limit_lower, action_gait - 0.2 * self.joints_hard_limit_lower),
+            np.min(self.joints_hard_limit_uppper, action_gait + 0.2 * self.joints_hard_limit_uppper),
         )
 
         self.sim.action(action)
