@@ -111,8 +111,8 @@ class ImitationEnv(gym.Env):
         # to normalize to [-1,1]
         joint_states = np.array(self.sim_agent.get_joint_states()) / np.pi
         obs = list(joint_states) + list(orn) + list(vel)[:2]
-        img = self.getVisualState()
-        return [np.array(obs),np.array(img)]
+#         img = self.getVisualState()
+        return np.array(obs)
 
     def reset(self):
         self.frame_idx = self.idx_start
