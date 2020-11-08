@@ -24,9 +24,9 @@ make_imitation_env("walk-forward")
 
 ACTION_TYPE = ["Relative", "Absolute", "Incremental"]
 # ACTION_SMOOTHING = [1, 2, 3, 4]
-RANDOM_ROT = [0, 1, 10, 100]
-ACTION_SCALING = [1.0, 2.0, 4.0] + list(np.arange(0.05, 0.56, 0.1))
-GAIT_FACTOR = [0.0, 0.2, 0.4, 0.6, 0.8, 0.95]
+RANDOM_ROT = [0, 1, 10]
+ACTION_SCALING = [0.1, 0.5, 1.0, 2.0]
+GAIT_FACTOR = [0.0, 0.33, 0.66, 0.95]
 CTRL_FREQ = [60, 10]
 SECONDS_OF_SIM = 2
 
