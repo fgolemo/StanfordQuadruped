@@ -3,7 +3,7 @@ import time
 import gym
 import stanford_quad
 
-env = gym.make("Pupper-Walk-Relative-aScale_1.0-gFact_0.2-RandomZRot_0-Graphical-v0")
+env = gym.make("Pupper-Walk-Relative-aScale_1.0-freq_60-gFact_0.66-RandomZRot_10-Graphical-v0")
 
 for i in range(3):
     env.reset()
