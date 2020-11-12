@@ -67,20 +67,19 @@ ctrl_freq = 60
 
 for headlessness in HEADLESSNESS:
     for random_rot in RANDOM_ROT:
-        for gait_fact in GAIT_FACTOR:
-            name = (
-                f"Pupper-Walk-FRC-"
-                # f"aScale_{action_scaling:.2}-"
-                f"randomZRot_{random_rot}-{headlessness}-v0"
-            )
-            print(name)
-            register(
-                id=name,
-                entry_point="stanford_quad.envs:WalkingEnv",
-                kwargs={
-                    "debug": (False if headlessness == "Headless" else True),
-                    "steps": SECONDS_OF_SIM * ctrl_freq,
-                    "random_rot": (0, 0, random_rot),
-                },
-                max_episode_steps=SECONDS_OF_SIM * ctrl_freq,
-            )
+        name = (
+            f"Pupper-Walk-FRC-"
+            # f"aScale_{action_scaling:.2}-"
+            f"randomZRot_{random_rot}-{headlessness}-v0"
+        )
+        print(name)
+        register(
+            id=name,
+            entry_point="stanford_quad.envs:WalkingEnv",
+            kwargs={
+                "debug": (False if headlessness == "Headless" else True),
+                "steps": SECONDS_OF_SIM * ctrl_freq,
+                "random_rot": (0, 0, random_rot),
+            },
+            max_episode_steps=SECONDS_OF_SIM * ctrl_freq,
+        )
