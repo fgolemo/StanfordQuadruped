@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<robot name="ergojr-gripper-4dof" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="root"/>
+    <joint name="root_to_shoulder" type="revolute">
+        <parent link="root"/>
+        <child link="shoulder"/>
+        <origin rpy="0 0 0" xyz="0 0 .03"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708"/>
+    </joint>
+    <link name="shoulder">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 .01425"/>
+            <geometry>
+                <cylinder length=".0285" radius="0.01"/>
+            </geometry>
+            <!--      <material name="white"/>-->
+        </visual>
+    </link>
+    <joint name="shoulder_to_upperarm" type="revolute">
+        <parent link="shoulder"/>
+        <child link="upperarm"/>
+        <origin rpy="0 0 0" xyz="0 0 .0285"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.5708" upper="1.5708"/>
+    </joint>
+    <link name="upperarm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 .0425"/>
+            <geometry>
+                <cylinder length=".085" radius="0.01"/>
+            </geometry>
+            <!--      <material name="white"/>-->
+        </visual>
+    </link>
+    <joint name="upperarm_to_lowerarm" type="revolute">
+        <parent link="upperarm"/>
+        <child link="lowerarm"/>
+        <origin rpy="0 0 0" xyz="0 0 .085"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.5708" upper="1.5708"/>
+    </joint>
+    <link name="lowerarm">
+        <visual>
+            <origin rpy="1.57 0 0" xyz="0 .0775 0"/>
+            <geometry>
+                <cylinder length=".155" radius="0.01"/>
+            </geometry>
+            <!--      <material name="white"/>-->
+        </visual>
+    </link>
+    <joint name="lowerarm_to_tip" type="fixed">
+        <parent link="lowerarm"/>
+        <child link="tip"/>
+        <origin rpy="1.57 0 0" xyz="0 .155 0"/>
+    </joint>
+    <link name="tip">
+        <visual>
+            <geometry>
+                <sphere radius="0.01"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+</robot>
