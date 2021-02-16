@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="stanford_quad",
+    name="gym_pupper",
     version="1.0",
     install_requires=["tqdm", "numpy", "gym", "transforms3d"],
     extras_require={
