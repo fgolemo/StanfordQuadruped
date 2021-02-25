@@ -1,5 +1,16 @@
 <?xml version="1.0" ?>
 <robot name="ergojr-gripper-4dof" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <material name="red">
+        <color rgba="0.8 0 0 1"/>
+    </material>
+    <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+    </material>
+    <material name="yellow">
+        <color rgba="0.8 0.8 0 1"/>
+    </material>
+
+
     <link name="root"/>
     <joint name="root_to_shoulder" type="revolute">
         <parent link="root"/>
@@ -14,7 +25,7 @@
             <geometry>
                 <cylinder length=".0285" radius="0.01"/>
             </geometry>
-            <!--      <material name="white"/>-->
+            <material name="red"/>
         </visual>
     </link>
     <joint name="shoulder_to_upperarm" type="revolute">
@@ -30,7 +41,7 @@
             <geometry>
                 <cylinder length=".085" radius="0.01"/>
             </geometry>
-            <!--      <material name="white"/>-->
+            <material name="blue"/>
         </visual>
     </link>
     <joint name="upperarm_to_lowerarm" type="revolute">
@@ -46,7 +57,7 @@
             <geometry>
                 <cylinder length=".155" radius="0.01"/>
             </geometry>
-            <!--      <material name="white"/>-->
+            <material name="yellow"/>
         </visual>
     </link>
     <joint name="lowerarm_to_tip" type="fixed">
