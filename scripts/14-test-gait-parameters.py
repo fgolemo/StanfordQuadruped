@@ -10,6 +10,16 @@ FPS = 60  # fraction of 240
 substeps = int(round(240 / FPS))
 
 sim = PupperSim2(debug=True, frequency=240)
+shelf = sim.p.loadURDF(
+    "shelf.urdf.xml", basePosition=[1, 0, 0], baseOrientation=sim.p.getQuaternionFromEuler([0, 0, np.pi / 2])
+)
+sim.p.changeDynamics(shelf, -1, linearDamping=0, angularDamping=0)
+sim.p.setCollisionFilterGroupMask(shelf, -1, collisionFilterGroup=0, collisionFilterMask=0)
+sleepy_state = (
+    sim.p.ACTIVATION_STATE_SLEEP + sim.p.ACTIVATION_STATE_ENABLE_SLEEPING + sim.p.ACTIVATION_STATE_DISABLE_WAKEUP
+)
+
+sim.p.changeDynamics(shelf, -1, activationState=sleepy_state)
 
 
 def reset_sim():
@@ -37,6 +47,7 @@ for param in ["velocity fwd", "velocity left"]:
     debug_params.append(sim.p.addUserDebugParameter(param, -1, 1, 0))
 debug_params.append(sim.p.addUserDebugParameter("reset", 1, 0, 1))
 debug_params.append(sim.p.addUserDebugParameter("plot joints", 1, 0, 1))
+# debug_params.append(sim.p.addUserDebugParameter("zero", 1, 0, 1))
 
 policy = HardPolicy()
 last_reset_val = -1

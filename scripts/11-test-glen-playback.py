@@ -10,13 +10,13 @@ from stanford_quad.sim.utils import segmap2color_fixed
 RECORDING_FPS = 60  # limited by camera
 SIM_FPS = 240  # arbitrary but should be a multiple of the RECORDING_FPS
 
-TRICK = "walk-forward"
-FRAME_START = 90
-FRAME_END = 400
+# TRICK = "walk-forward"
+# FRAME_START = 90
+# FRAME_END = 400
 
-# TRICK = "walk-backward"
-# FRAME_START = 150
-# FRAME_END = 450
+TRICK = "walk-backward"
+FRAME_START = 150
+FRAME_END = 450
 
 # TRICK = "jump"
 # FRAME_START = 120

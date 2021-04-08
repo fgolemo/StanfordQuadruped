@@ -36,6 +36,7 @@ class PupperSim2:
         img_size=(84, 84),
         enable_new_floor=False,
         frequency=FREQ_SIM,
+        with_arm=False,
     ):
         """
 
@@ -47,12 +48,19 @@ class PupperSim2:
         :param float g: Gravity value
         """
         if xml_path is None:
-            xml_path = os.path.join(ASSET_DIR, "pupper_pybullet_out.xml")
+            xml_path = os.path.join(ASSET_DIR, "pupper_pybullet_out{}.xml".format("_arm" if with_arm else ""))
+            print("=== Loading xml:", xml_path)
 
         self.gain_pos = gain_pos
         self.gain_vel = gain_vel
         self.max_torque = max_torque
+
+        self.gain_pos_arm = 1
+        self.gain_vel_arm = 1
+        self.max_torque_arm = 1
+
         self.img_size = img_size
+        self.with_arm = with_arm
 
         if debug:
             startup_flag = pybullet.GUI
@@ -65,7 +73,7 @@ class PupperSim2:
 
         if debug:
             self.p.resetDebugVisualizerCamera(
-                cameraDistance=1.5, cameraYaw=180, cameraPitch=-45, cameraTargetPosition=[0, 0.0, 0]
+                cameraDistance=1.5, cameraYaw=180, cameraPitch=-45, cameraTargetPosition=[0.5, 0, 0]
             )
 
         # self.p.loadURDF("plane.urdf")
@@ -81,6 +89,10 @@ class PupperSim2:
         self.cam_proj = self.p.computeProjectionMatrixFOV(
             fov=90, aspect=self.img_size[0] / self.img_size[1], nearVal=0.001, farVal=10
         )
+
+        self.arm = None
+        if with_arm:
+            self.joint_indices_arm = [24, 26, 28]
 
         self.collision_floor = None
         if enable_new_floor:
@@ -161,7 +173,10 @@ class PupperSim2:
 
     def change_color(self, color=(1, 0, 1, 1)):
         self.p.changeVisualShape(self.model, -1, rgbaColor=color)
-        for j in range(24):  # not 12 because there's some fixed joints in there
+        joints = 24
+        if self.with_arm:
+            joints = 30
+        for j in range(joints):  # not 12 because there's some fixed joints in there
             self.p.changeVisualShape(self.model, j, rgbaColor=color)
 
     def move_kinectic_body(self, pos, rot):
@@ -201,6 +216,24 @@ class PupperSim2:
             positionGains=[self.gain_pos] * 12,
             velocityGains=[self.gain_vel] * 12,
             forces=[self.max_torque] * 12,
+        )
+
+    @staticmethod
+    def joint_sanity_check_arm(joint_angles):
+        assert len(joint_angles) == 3
+        assert np.min(np.rad2deg(joint_angles)) >= -180
+        assert np.max(np.rad2deg(joint_angles)) <= 180
+
+    def action_arm(self, joint_angles):
+        self.joint_sanity_check_arm(joint_angles)
+        self.p.setJointMotorControlArray(
+            bodyUniqueId=self.model,
+            jointIndices=self.joint_indices_arm,
+            controlMode=self.p.POSITION_CONTROL,
+            targetPositions=list(joint_angles),
+            positionGains=[self.gain_pos_arm] * 3,
+            velocityGains=[self.gain_vel_arm] * 3,
+            forces=[self.max_torque_arm] * 3,
         )
 
     def set(self, joint_angles):

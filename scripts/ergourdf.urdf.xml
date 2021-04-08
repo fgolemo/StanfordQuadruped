@@ -27,6 +27,15 @@
             </geometry>
             <material name="red"/>
         </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 .01425"/>
+            <geometry>
+                <cylinder length=".0285" radius="0.01"/>
+            </geometry>
+        </collision>
+<!--        <inertial>-->
+<!--            <mass value=".01"/>-->
+<!--        </inertial>-->
     </link>
     <joint name="shoulder_to_upperarm" type="revolute">
         <parent link="shoulder"/>
@@ -43,6 +52,15 @@
             </geometry>
             <material name="blue"/>
         </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 .0425"/>
+            <geometry>
+                <cylinder length=".085" radius="0.01"/>
+            </geometry>
+        </collision>
+<!--        <inertial>-->
+<!--            <mass value=".01"/>-->
+<!--        </inertial>-->
     </link>
     <joint name="upperarm_to_lowerarm" type="revolute">
         <parent link="upperarm"/>
@@ -59,6 +77,15 @@
             </geometry>
             <material name="yellow"/>
         </visual>
+        <collision>
+            <origin rpy="1.57 0 0" xyz="0 .0775 0"/>
+            <geometry>
+                <cylinder length=".155" radius="0.01"/>
+            </geometry>
+        </collision>
+<!--        <inertial>-->
+<!--            <mass value=".01"/>-->
+<!--        </inertial>-->
     </link>
     <joint name="lowerarm_to_tip" type="fixed">
         <parent link="lowerarm"/>
@@ -74,5 +101,13 @@
                 <color rgba="0 1 0 1"/>
             </material>
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="0.01"/>
+            </geometry>
+        </collision>
+<!--        <inertial>-->
+<!--            <mass value=".01"/>-->
+<!--        </inertial>-->
     </link>
 </robot>

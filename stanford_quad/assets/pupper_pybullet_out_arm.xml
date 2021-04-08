@@ -1,0 +1,203 @@
+<!-- Stanford Woofer Model
+
+The state space is populated with joints in the order that they are
+defined in this file.
+
+The elements of the control variable s.d.ctrl correspond to:
+[fr_x, fr_y, fr_ext,
+fl_x, fl_y, fl_ext,
+br_x, br_y, br_ext,
+bl_x, bl_y, bl_ext]
+
+fr = front-right
+fl = front-left
+br = back-right
+bl = back-left
+_x indicates rotation on the forward/back axis of the robot
+_y indicates rotation on the left/right axis of the hip module
+_ext indicates linear extension of the leg. Positive values = leg goes up
+-->
+<mujoco model="cheetah">
+    <compiler angle="radian" coordinate="local" inertiafromgeom="false"/>
+
+    <default>
+        <joint armature="0.01936" stiffness="0"/>
+        <geom conaffinity="0" condim="3" contype="1" friction="1.5 .1 .1" rgba="0.8 0.6 .4 1"/>
+        <position forcelimited="true"/>
+    </default>
+
+    <size nstack="300000" nuser_geom="1"/>
+
+    <asset>
+        <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
+        <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01"
+                 rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+        <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+        <material name="MatPlane" reflectance="0.5" shininess="1" specular="1" texrepeat="60 60" texture="texplane"/>
+        <material name="geom" texture="texgeom" texuniform="true"/>
+    </asset>
+
+    <worldbody>
+        <geom conaffinity="1" condim="3" material="MatPlane" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1"
+              size="40 40 40" type="plane"/>
+        <body name="torso" pos="0 0 0.3">
+            <inertial pos="0 0 0" mass="0.56" diaginertia="0.0005532 0.0037619999999999997 0.004011000000000001"/>
+            <!--        <inertial pos="0 0 0" mass="1.0" diaginertia="0.0005532 0.0037619999999999997 0.004011000000000001"/>-->
+            <geom pos="0 0 0" name="torso" size="0.138 0.05 0.025" type="box"/>
+            <site name="imu_site" pos="0 0 0" size=".01 .01 .01" type="box"/>
+
+            <body name="fr_module" pos="0.1 -0.04 0">
+                <geom pos="0 -0.0132 0" name="fr_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+                <joint axis="1 0 0" name="fr_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                       damping="1.049"/>
+                <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
+                <body name="fr" pos="0 -0.03 0">
+                    <joint axis="0 1 0" name="fr_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                           damping="1.049"/>
+                    <inertial pos="0 0 0" mass="0.03"
+                              diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                    <geom axisangle="0 1 0 0" name="fr" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                          rgba="1 0 0 0.5" density="50"/>
+                    <body name="fr2" pos="0 0 -0.1235">
+                        <joint axis="0 1 0" name="fr_y2" pos="0 0 0" limited="true" range="-3.14 0.0" type="hinge"
+                               damping="1.049"/>
+                        <inertial pos="0 0 0" mass="0.03"
+                                  diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                        <geom axisangle="0 1 0 0" name="fr_l2" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                              rgba="1 0 0 0.5" density="50"/>
+                    </body>
+                </body>
+            </body>
+
+            <body name="fl_module" pos="0.1 0.04 0">
+                <geom pos="0 0.0132 0" name="fl_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+                <joint axis="1 0 0" name="fl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                       damping="1.049"/>
+                <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
+                <body name="fl" pos="0 0.03 0">
+                    <joint axis="0 1 0" name="fl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                           damping="1.049"/>
+                    <inertial pos="0 0 0" mass="0.03"
+                              diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                    <geom axisangle="0 1 0 0" name="fl" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                          rgba="1 0 0 0.5" density="50"/>
+                    <body name="fl2" pos="0 0 -0.1235">
+                        <joint axis="0 1 0" name="fl_y2" pos="0 0 0" limited="true" range="-3.14 0.0" type="hinge"
+                               damping="1.049"/>
+                        <inertial pos="0 0 0" mass="0.03"
+                                  diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                        <geom axisangle="0 1 0 0" name="fl_l2" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                              rgba="1 0 0 0.5" density="50"/>
+                    </body>
+                </body>
+            </body>
+
+            <body name="br_module" pos="-0.1 -0.04 0">
+                <geom pos="0 -0.0132 0" name="br_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+                <joint axis="1 0 0" name="br_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                       damping="1.049"/>
+                <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
+                <body name="br" pos="0 -0.03 0">
+                    <joint axis="0 1 0" name="br_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                           damping="1.049"/>
+                    <inertial pos="0 0 0" mass="0.03"
+                              diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                    <geom axisangle="0 1 0 0" name="br" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                          rgba="1 0 0 0.5" density="50"/>
+                    <body name="br2" pos="0 0 -0.1235">
+                        <joint axis="0 1 0" name="br_y2" pos="0 0 0" limited="true" range="-3.14 0.0" type="hinge"
+                               damping="1.049"/>
+                        <inertial pos="0 0 0" mass="0.03"
+                                  diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                        <geom axisangle="0 1 0 0" name="br_l2" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                              rgba="1 0 0 0.5" density="50"/>
+                    </body>
+                </body>
+            </body>
+
+            <body name="bl_module" pos="-0.1 0.04 0">
+                <geom pos="0 0.0132 0" name="bl_block" type="box" size="0.0197 0.0372 0.0107" rgba="0.6 0.8 .4 1"/>
+                <joint axis="1 0 0" name="bl_x" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                       damping="1.049"/>
+                <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>
+                <body name="bl" pos="0 0.03 0">
+                    <joint axis="0 1 0" name="bl_y" pos="0 0 0" limited="true" range="-1.57 1.57" type="hinge"
+                           damping="1.049"/>
+                    <inertial pos="0 0 0" mass="0.03"
+                              diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                    <geom axisangle="0 1 0 0" name="bl" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                          rgba="1 0 0 0.5" density="50"/>
+                    <body name="bl2" pos="0 0 -0.1235">
+                        <joint axis="0 1 0" name="bl_y2" pos="0 0 0" limited="true" range="-3.14 0.0" type="hinge"
+                               damping="1.049"/>
+                        <inertial pos="0 0 0" mass="0.03"
+                                  diaginertia="1.3020833333333332e-05 1.3020833333333332e-05 1e-06"/>
+                        <geom axisangle="0 1 0 0" name="bl_l2" fromto="0 0 0 0 0 -0.125" size="0.01" type="capsule"
+                              rgba="1 0 0 0.5" density="50"/>
+                    </body>
+                </body>
+            </body>
+
+            <!--        <body name="shoulder" pos="0 0 .01425">-->
+            <!--            <geom axisangle="0 1 0 0" name="shoulder_geom" fromto="0 0 0 0 0 .0285" size="0.01" type="capsule" rgba="1 0 0 0.5" density="50"/>-->
+            <!--            <joint axis="0 0 1" name="shoulder_joint" pos="0 0 .03" limited="true" range="-1.57 1.57" type="hinge" damping="1.049"/>-->
+            <!--            <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>-->
+
+            <!--            <body name="upperarm" pos="0 0 .0425">-->
+            <!--                <geom axisangle="0 1 0 0" name="upperarm_geom" fromto="0 0 0 0 0 .085" size="0.01" type="capsule" rgba="1 0 0 0.5" density="50"/>-->
+            <!--                <joint axis="1 0 0" name="upperarm_joint" pos="0 0 .0285" limited="true" range="-1.57 1.57" type="hinge" damping="1.049"/>-->
+            <!--                <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>-->
+
+            <!--                <body name="lowerarm" pos="0 .0775 0" euler="0 1.57 0">-->
+            <!--                    <geom axisangle="0 1 0 0" name="lowerarm_geom" fromto="0 0 0 0 0 .155" size="0.01" type="capsule" rgba="1 0 0 0.5" density="50"/>-->
+            <!--                    <joint axis="1 0 0" name="lowerarm_joint" pos="0 0 .085" limited="true" range="-1.57 1.57" type="hinge" damping="1.049"/>-->
+            <!--                    <inertial pos="0 0 0" mass="0.08" diaginertia="3.698e-05 7.127e-06 4.075e-05"/>-->
+            <!--                </body>-->
+            <!--            </body>-->
+            <!--        </body>-->
+<!--            <body name="shoulder" pos="0.09 0 0.03"  euler="0 0 -1.570796">-->
+            <body name="shoulder" pos="0.1 0 0.026"  quat="0.707 0 0 -0.707">
+                <inertial pos="0 0 0.01425" mass="0.00895354" diaginertia="8.29881e-07 8.29881e-07 4.47677e-07"/>
+                <joint name="shoulder_joint" pos="0 0 0" axis="0 0 1" limited="true" range="-1.5708 1.5708" type="hinge"/>
+                <geom size="0.01 0.01425" pos="0 0 0.01425" type="cylinder" rgba="0.8 0 0 1"/>
+                <body name="upperarm" pos="0 0 0.0285">
+                    <inertial pos="0 0 0.0425" mass="0.0267035" diaginertia="1.67453e-05 1.67453e-05 1.33518e-06"/>
+                    <joint name="upperarm_joint" pos="0 0 0" axis="1 0 0" limited="true" range="-1.5708 1.5708" type="hinge"/>
+                    <geom size="0.01 0.0425" pos="0 0 0.0425" type="cylinder" rgba="0 0 0.8 1"/>
+                    <body name="lowerarm" pos="0 0 0.085">
+                        <inertial pos="0 0.0836386 0" quat="0.707334 0.70688 0 0" mass="0.0528835"
+                                  diaginertia="0.000122042 0.000122042 2.6023e-06"/>
+                        <joint name="lowerarm_joint" pos="0 0 0" axis="1 0 0" limited="true" range="-1.5708 1.5708" type="hinge"/>
+                        <geom size="0.01 0.0775" pos="0 0.0775 0" quat="0.707388 0.706825 0 0" type="cylinder"
+                              rgba="0.8 0.8 0 1"/>
+                        <geom size="0.01" type="sphere" pos="0 0.155 0" quat="0.707388 0.706825 0 0" rgba="0 1 0 1"/>
+                    </body>
+                </body>
+            </body>
+
+
+        </body>
+    </worldbody>
+
+    <actuator>
+        <position gear="1" joint="fr_x" name="fr_x" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="fr_y" name="fr_y" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="fr_y2" name="fr_y2" kp="300" forcerange="-6.0 6.0"/>
+
+        <position gear="1" joint="fl_x" name="fl_x" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="fl_y" name="fl_y" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="fl_y2" name="fl_y2" kp="300" forcerange="-6.0 6.0"/>
+
+        <position gear="1" joint="br_x" name="br_x" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="br_y" name="br_y" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="br_y2" name="br_y2" kp="300" forcerange="-6.0 6.0"/>
+
+        <position gear="1" joint="bl_x" name="bl_x" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="bl_y" name="bl_y" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="bl_y2" name="bl_y2" kp="300" forcerange="-6.0 6.0"/>
+
+        <position gear="1" joint="shoulder_joint" name="shoulder_joint" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="upperarm_joint" name="upperarm_joint" kp="300" forcerange="-6.0 6.0"/>
+        <position gear="1" joint="lowerarm_joint" name="lowerarm_joint" kp="300" forcerange="-6.0 6.0"/>
+    </actuator>
+</mujoco>
