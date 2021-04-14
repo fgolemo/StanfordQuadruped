@@ -36,6 +36,7 @@ class Configuration:
         self.max_x_velocity = 0.4
         self.max_y_velocity = 0.3
         self.max_yaw_rate = 2.0
+        self.max_arm_rate = 0.1
         self.max_pitch = 30.0 * np.pi / 180.0
 
         #################### MOVEMENT PARAMS ####################
@@ -48,6 +49,8 @@ class Configuration:
         self.yaw_time_constant = 0.3
         self.max_stance_yaw = 1.2
         self.max_stance_yaw_rate = 2.0
+        self.arm_ik_ticks = 5  # minimum number of ticks to pass before IK updates
+        self.arm_smooth = 1  # number of averaging steps for arm
 
         #################### STANCE ####################
         self.delta_x = 0.1

@@ -34,3 +34,9 @@ def controller_to_sim(joints):
     joint_angles_robot = parallel_to_serial_joint_angles(joint_angles)
 
     return joint_angles_robot.T.flatten()
+
+
+def ik_to_sim(joints):
+    joint = np.copy(joints[:3])
+    joint[1:] *= -1
+    return joint

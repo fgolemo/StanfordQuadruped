@@ -206,6 +206,9 @@ class PupperSim2:
         assert np.max(np.rad2deg(joint_angles)) <= 180
 
     def action(self, joint_angles):
+        """ Expects joint angles in radians
+
+        """
         self.joint_sanity_check(joint_angles)
 
         self.p.setJointMotorControlArray(
