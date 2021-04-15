@@ -48,11 +48,14 @@ print(np.around(armik.chain.forward_kinematics((0, 0, 0, 0, 0))[:3, 3], 2))
 
 point = np.array((0, 0.16, 0.14))
 
+
 for i in range(100):
-    point[1] += 0.01
+    point[1] += 0.1
     ax = matplotlib.pyplot.figure().add_subplot(111, projection="3d")
     ax.set_xlim(-0.2, 0.2)
     ax.set_ylim(-0.2, 0.2)
     ax.set_zlim(0, 0.4)
-    armik.chain.plot(armik.chain.inverse_kinematics(point), ax)
+    joints = armik.chain.inverse_kinematics(point)
+    print(np.around(joints, 5))
+    armik.chain.plot(joints, ax)
     matplotlib.pyplot.show()

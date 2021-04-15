@@ -34,10 +34,19 @@ class ControllerArm:
         """
         state.arm_pos += command.arm_diff
         if np.count_nonzero(command.arm_diff) > 0 and state.ticks - self.last_tick > self.config.arm_ik_ticks:
-            state.arm_joints = np.array(self.ik.pos2joints(state.arm_pos))
+            state.arm_joints = np.array(self.ik.chain.inverse_kinematics(state.arm_pos))[1:4]
             self.last_tick = np.copy(state.ticks)
-            if normalized:
-                state.arm_joints = np.deg2rad(state.arm_joints)
+            if len(self.buffer) > 0:
+                state.arm_joints = np.array(
+                    [
+                        joint
+                        if np.abs(self.buffer[-1][idx] - joint) < self.config.arm_ik_glitch_threshold
+                        else self.buffer[-1][idx]
+                        for idx, joint in enumerate(state.arm_joints)
+                    ]
+                )
+            # if normalized: #TODO
+            #     state.arm_joints = np.deg2rad(state.arm_joints)
 
             # moving avg smoothing
             self.buffer.append(np.copy(state.arm_joints))

@@ -49,8 +49,9 @@ class Configuration:
         self.yaw_time_constant = 0.3
         self.max_stance_yaw = 1.2
         self.max_stance_yaw_rate = 2.0
-        self.arm_ik_ticks = 5  # minimum number of ticks to pass before IK updates
+        self.arm_ik_ticks = 2  # minimum number of ticks to pass before IK updates
         self.arm_smooth = 1  # number of averaging steps for arm
+        self.arm_ik_glitch_threshold = 1.0
 
         #################### STANCE ####################
         self.delta_x = 0.1
