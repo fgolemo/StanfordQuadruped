@@ -9,6 +9,7 @@ import numpy as np
 from stanford_quad.assets import ASSET_DIR
 from stanford_quad.sim.HardwareInterface import HardwareInterface
 from stanford_quad.sim.utils import random_bright_color, pybulletimage2numpy, pybulletsegmap2numpy
+from stanford_quad.sim.procedural_generation.room_generator import RoomGenerator
 
 FREQ_SIM = 240
 
@@ -273,7 +274,7 @@ class PupperSim2:
             baseVisualShapeIndex=obj_visual,
             basePosition=pos,
             baseOrientation=orn,
-            useMaximalCoordinates=False,
+            useMaximalCoordinates=False
         )
         return obj
 
@@ -353,6 +354,12 @@ class PupperSim2:
         )
 
         return steps
+        pos = (1, 0, 0)
+        orientation = [0, 0, 0]
+        size = (1,0.5, .1)
+    def add_rooms(self, pos=(1, 0, 0), orientation=[0, 0, 0], size=(1, 0.5, .1), color=(0.5, 1, 1)):
+        room_generator = RoomGenerator(self.p, pos, orientation, size, color)
+        room_generator.generate_room()
 
     def take_photo(self, camera_offset=(0, -0.3, 0.3), lookat_offset=(0, 0, 0), with_segmap=False, follow_bot=True):
         pos, _, _ = self.get_pos_orn_vel()
