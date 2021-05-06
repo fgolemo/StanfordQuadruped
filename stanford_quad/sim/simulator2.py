@@ -355,7 +355,7 @@ class PupperSim2:
 
         return steps
 
-    def add_rooms(self, pos=(0, 0, 0), size=(2, 1, .1), color=(0.5, 1, 1)):
+    def add_rooms(self, pos=(1.5, 0, 0), size=(2, 1, 1), color=(0.5, 1, 1)):
         room = Room(self.p, pos, size, color)
         room.generate_room()
 
