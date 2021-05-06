@@ -22,7 +22,7 @@ class Floor:
 
     def create(self):
         floor_obj = BoxPybullet(self.p, self.pos, self.orientation, self.size, self.color, False).create()
-
+        """
         # Fix the floor to the ground/world
         self.p.createConstraint(
             parentBodyUniqueId=floor_obj,
@@ -32,8 +32,9 @@ class Floor:
             jointType=self.p.JOINT_FIXED,
             jointAxis=(1, 1, 1),
             parentFramePosition=-np.array([0, 0, self.size[2]]),  # np.array(pos),
-            childFramePosition=self.pos,
-        )
+            childFramePosition=(self.pos[0], self.pos[1], self.pos[2]),
+        )        )
+        """
 
         self.uid = floor_obj
 
@@ -77,7 +78,7 @@ class Floor:
 
         floor_x_constraint_pos = -self.get_half_x_size() + floor_x_pos * self.get_full_x_size()
         floor_y_constraint_pos = -self.get_half_y_size() + floor_y_pos * self.get_full_y_size()
-
+        """
         self.p.createConstraint(
             parentBodyUniqueId=object_uid,
             parentLinkIndex=-1,
@@ -86,5 +87,5 @@ class Floor:
             jointType=self.p.JOINT_FIXED,
             jointAxis=(1, 1, 1),
             parentFramePosition=np.array([0, 0, -object_half_size[2]]),
-            childFramePosition=np.array([floor_x_constraint_pos, floor_y_constraint_pos, self.size[2]]),
-        )
+            childFramePosition=np.array([floor_x_constraint_pos, floor_y_constraint_pos, self.size[2] + 0.01]),
+        )"""

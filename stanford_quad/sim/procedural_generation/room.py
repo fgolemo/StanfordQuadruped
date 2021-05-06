@@ -3,7 +3,7 @@ import numpy as np
 from stanford_quad.sim.procedural_generation.floor import Floor
 from stanford_quad.sim.procedural_generation.box_pybullet import BoxPybullet
 
-class RoomGenerator:
+class Room:
 
     def __init__(self, p, pos, floor_size, color):
         self.p = p
@@ -18,7 +18,7 @@ class RoomGenerator:
         self.floor = None
 
     def generate_room(self):
-
+        #import pdb; pdb.set_trace()
         # Create room floor
         self.floor = Floor(self.p, self.pos, self.orientation, self.floor_size, self.color)
         floor_uid = self.floor.create()

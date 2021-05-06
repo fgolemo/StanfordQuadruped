@@ -28,10 +28,11 @@ class BoxPybullet:
             )
 
 
-        obj_collision = self.p.createCollisionShape(shapeType=self.p.GEOM_BOX, halfExtents=self.size)
+        obj_collision = self.p.createCollisionShape(shapeType=self.p.GEOM_BOX, halfExtents=self.size,
+                                                    flags=self.p.GEOM_FORCE_CONCAVE_TRIMESH)
 
         obj = self.p.createMultiBody(
-            baseMass=0.1,  # doesn't matter
+            baseMass=0,  # doesn't matter
             baseCollisionShapeIndex=obj_collision,
             baseVisualShapeIndex=obj_visual,
             basePosition=self.pos,

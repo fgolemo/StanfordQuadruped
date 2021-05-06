@@ -9,7 +9,7 @@ import numpy as np
 from stanford_quad.assets import ASSET_DIR
 from stanford_quad.sim.HardwareInterface import HardwareInterface
 from stanford_quad.sim.utils import random_bright_color, pybulletimage2numpy, pybulletsegmap2numpy
-from stanford_quad.sim.procedural_generation.room_generator import RoomGenerator
+from stanford_quad.sim.procedural_generation.room import Room
 
 FREQ_SIM = 240
 
@@ -355,9 +355,9 @@ class PupperSim2:
 
         return steps
 
-    def add_rooms(self, pos=(2.4, 0, 0), size=(2, 1, .1), color=(0.5, 1, 1)):
-        room_generator = RoomGenerator(self.p, pos, size, color)
-        room_generator.generate_room()
+    def add_rooms(self, pos=(0, 0, 0), size=(2, 1, .1), color=(0.5, 1, 1)):
+        room = Room(self.p, pos, size, color)
+        room.generate_room()
 
     def take_photo(self, camera_offset=(0, -0.3, 0.3), lookat_offset=(0, 0, 0), with_segmap=False, follow_bot=True):
         pos, _, _ = self.get_pos_orn_vel()
