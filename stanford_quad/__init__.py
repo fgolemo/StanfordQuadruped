@@ -83,3 +83,27 @@ for headlessness in HEADLESSNESS:
             },
             max_episode_steps=SECONDS_OF_SIM * ctrl_freq,
         )
+
+# Cyril envs (we can merge and clean later) TODO: Find static parameters.
+
+default_ctrl_freq = 10
+default_action_scaling = 0.03
+default_gait_fact = 0.5
+default_second_of_sim = 50
+
+register(
+    id="PupperBaseDebug-v0",
+    entry_point="stanford_quad.envs:PupperBase",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, random_rot),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)

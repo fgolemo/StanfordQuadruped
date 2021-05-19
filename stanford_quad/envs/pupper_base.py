@@ -123,7 +123,7 @@ class PupperBase(gym.Env):
 
         self.episode_steps += 1
 
-        return self._get_obs(), self._get_reward(), self._get_done(), self._get_info()
+        return self._get_obs(), self._get_reward(action), self._get_done(), self._get_info()
 
 
     def _get_obs(self):
@@ -135,7 +135,7 @@ class PupperBase(gym.Env):
         obs = list(joint_states) + list(orn) + list(vel)[:2]
         return obs
 
-    def _get_reward(self):
+    def _get_reward(self, action):
         """
         :return: Base rewardd (can be overwritten by child classes for different tasks)
         """
@@ -188,7 +188,10 @@ class PupperBase(gym.Env):
         # where N comes from the action_smoothing hyper-parameter
         self.action_smoothing.append(action_clean)
         action_agent = np.mean(self.action_smoothing, axis=0)
-        action_gait = controller_to_sim(self.gait.act(velocity_horizontal=(0.2, 0), normalized=False))
+
+        # TODO: Verify this, there an array of 2 and legs actions are in first dim, I added [0]
+        #  (maybe because of an update of gait for the arm actions ?)
+        action_gait = controller_to_sim(self.gait.act(velocity_horizontal=(0.2, 0), normalized=False)[0])
         action = self.gait_factor * action_gait + (1 - self.gait_factor) * action_agent
 
         # let's clip again just to be safe and within the boundaries of the expert
