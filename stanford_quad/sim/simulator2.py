@@ -355,8 +355,11 @@ class PupperSim2:
 
         return steps
 
-    def add_rooms(self, pos=(1.5, 0, 0), size=(2, 1, 1), color=(0.5, 1, 1)):
+    def add_rooms(self, pos=(1.5, 0, 0), size=(2, 1, .1), color=(0.5, 1, 1)):
         room = Room(self.p, pos, size, color)
+        room.add_inside_wall(True, 0.01, 0.4, (0, 0.5))
+        room.add_inside_wall(True, 0.01, 0.4, (0.6, 1))
+
         room.generate_room()
 
     def take_photo(self, camera_offset=(0, -0.3, 0.3), lookat_offset=(0, 0, 0), with_segmap=False, follow_bot=True):

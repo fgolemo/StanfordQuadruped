@@ -94,7 +94,7 @@ for i in trange(60 * 47):
         font = cv2.FONT_HERSHEY_SIMPLEX
         img = np.array(img)
         # cv2.putText(img, txt, (200, 200), font, 1, (255, 106, 213), 2, cv2.LINE_AA)
-        cv2.putText(img, txt, (200, 200), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
+        #cv2.putText(img, txt, (200, 200), font, 1, (0, 0, 0), 2, cv2.LINE_AA)
         # cv2.imshow("test", img[:, :, ::-1])
         # cv2.waitKey(1)
         cv2.imwrite(f"../imgs/experts-gif/{i:04d}.png", img[:, :, ::-1])
