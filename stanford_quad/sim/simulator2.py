@@ -119,15 +119,16 @@ class PupperSim2:
     def step(self):
         self.p.stepSimulation()
 
-    def reset(self, rest=True, random_rot=(0, 0, 0), random_pos=(0, 0, 0)):
-        height = 0.301
+    def reset(self, rest=True, random_rot=(0, 0, 0), random_pos=(0, 0, 0), init_pos=(0, 0, 0.301)):
         if rest:
-            height = 0.183
+            #height = 0.183
+            init_pos[2] = 0.183
+
         # self.p.resetBasePositionAndOrientation(self.model, [0, 0, height], self.p.getQuaternionFromEuler([0, 0, 0]))
         rand_pos = (
-            np.random.uniform(-random_pos[0], random_pos[0], 1)[0],
-            np.random.uniform(-random_pos[1], random_pos[1], 1)[0],
-            np.random.uniform(-random_pos[2], random_pos[2], 1)[0] + height,
+            np.random.uniform(-random_pos[0], random_pos[0], 1)[0] + init_pos[0],
+            np.random.uniform(-random_pos[1], random_pos[1], 1)[0] + init_pos[1],
+            np.random.uniform(-random_pos[2], random_pos[2], 1)[0] + init_pos[2],
         )
         rand_rot = (
             np.random.normal(0, random_rot[0], 1)[0],

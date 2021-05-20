@@ -26,6 +26,9 @@ class Floor:
 
         return floor_obj
 
+    def clear(self):
+        self.p.removeBody(self.uid)
+
     def get_half_x_size(self):
         return self.size[0]
 

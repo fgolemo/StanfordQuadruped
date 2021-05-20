@@ -89,10 +89,8 @@ class PupperBase(gym.Env):
     def reset(self):
         self.episode_steps = 0
 
-        # both when the action formulation is incremental and when it's relative, we need to start standing
-        self.sim.reset(rest=True)  # also stand up the robot
-        # for _ in range(10):
-        #     self.sim.step()
+        # Add elements in our environment
+        self._reset_simulation_env()
 
         # this is used when self.incremental_action == True
         self.current_action = self.sim.get_rest_pos()
@@ -101,6 +99,10 @@ class PupperBase(gym.Env):
         self.gait = HardPolicy()
 
         return self._get_obs()
+
+    def _reset_simulation_env(self):
+        # both when the action formulation is incremental and when it's relative, we need to start standing
+        self.sim.reset(rest=True)  # also stand up the robot
 
     def seed(self, seed=None):
         np.random.seed(seed)

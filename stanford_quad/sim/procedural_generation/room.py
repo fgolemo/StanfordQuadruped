@@ -35,6 +35,7 @@ class Room:
         self.walls_thickness = walls_thickness
         self.color = color
         self.inside_walls = []
+        self.walls_uid = []
         self.floor = None
 
     def add_inside_wall(self, x_y_axis, thickness, relative_pos, length_interval):
@@ -59,6 +60,9 @@ class Room:
         top_wall_uid = top_down_wall.create()
         down_wall_uid = top_down_wall.create()
 
+        self.walls_uid.append(top_wall_uid)
+        self.walls_uid.append(down_wall_uid)
+
         self.floor.put_on(top_wall_uid, 0.5, 0, top_down_wall_size[2])
         self.floor.put_on(down_wall_uid, 0.5, 1, top_down_wall_size[2])
 
@@ -66,6 +70,9 @@ class Room:
         side_wall = BoxPybullet(self.p, [0, 0, 0], self.orientation, side_wall_size, self.color, False)
         left_wall_uid = side_wall.create()
         right_wall_uid = side_wall.create()
+        self.walls_uid.append(left_wall_uid)
+        self.walls_uid.append(right_wall_uid)
+
         self.floor.put_on(left_wall_uid, 0, 0.5, side_wall_size[2])
         self.floor.put_on(right_wall_uid, 1, 0.5, side_wall_size[2])
 
@@ -76,6 +83,7 @@ class Room:
                 wall_size = (self.floor_size[0] * wall_length, inside_wall.thickness, self.walls_height)
                 wall_box = BoxPybullet(self.p, [0, 0, 0], self.orientation, wall_size, self.color, False)
                 wall_uid = wall_box.create()
+                self.walls_uid.append(wall_uid)
                 self.floor.put_on(wall_uid,inside_wall.length_interval[0] + wall_length*0.5, inside_wall.relative_pos,
                                   wall_size[2])
 
@@ -83,6 +91,12 @@ class Room:
                 wall_size = (inside_wall.thickness, self.floor_size[1] * wall_length, self.walls_height)
                 wall_box = BoxPybullet(self.p, [0, 0, 0], self.orientation, wall_size, self.color, False)
                 wall_uid = wall_box.create()
-                self.floor.put_on(wall_uid,self.inside_wall.relative_pos,
+                self.walls_uid.append(wall_uid)
+                self.floor.put_on(wall_uid,inside_wall.relative_pos,
                                   inside_wall.length_interval[0] + wall_length*0.5, wall_size[2])
 
+
+    def clear(self):
+        self.floor.clear()
+        for wall_uid in self.walls_uid:
+            self.p.removeBody(wall_uid)

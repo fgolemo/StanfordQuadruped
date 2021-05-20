@@ -107,3 +107,20 @@ register(
     },
     max_episode_steps=default_second_of_sim * default_ctrl_freq,
 )
+
+register(
+    id="WalkRoomGoal-v0",
+    entry_point="stanford_quad.envs:WalkRoomGoal",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, random_rot),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
