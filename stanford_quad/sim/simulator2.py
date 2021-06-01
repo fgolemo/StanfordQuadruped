@@ -119,16 +119,15 @@ class PupperSim2:
     def step(self):
         self.p.stepSimulation()
 
-    def reset(self, rest=True, random_rot=(0, 0, 0), random_pos=(0, 0, 0), init_pos=(0, 0, 0.301)):
+    def reset(self, rest=True, random_rot=(0, 0, 0), random_pos=(0, 0, 0)):
+        height = 0.301
         if rest:
-            #height = 0.183
-            init_pos[2] = 0.183
-
+            height = 0.183
         # self.p.resetBasePositionAndOrientation(self.model, [0, 0, height], self.p.getQuaternionFromEuler([0, 0, 0]))
         rand_pos = (
-            np.random.uniform(-random_pos[0], random_pos[0], 1)[0] + init_pos[0],
-            np.random.uniform(-random_pos[1], random_pos[1], 1)[0] + init_pos[1],
-            np.random.uniform(-random_pos[2], random_pos[2], 1)[0] + init_pos[2],
+            np.random.uniform(-random_pos[0], random_pos[0], 1)[0],
+            np.random.uniform(-random_pos[1], random_pos[1], 1)[0],
+            np.random.uniform(-random_pos[2], random_pos[2], 1)[0] + height,
         )
         rand_rot = (
             np.random.normal(0, random_rot[0], 1)[0],
@@ -359,7 +358,7 @@ class PupperSim2:
     def add_rooms(self, pos=(1.5, 0, 0), size=(2, 1, .1), color=(0.5, 1, 1)):
         room = Room(self.p, pos, size, color)
         room.add_inside_wall(True, 0.01, 0.4, (0, 0.5))
-        room.add_inside_wall(True, 0.01, 0.4, (0.6, 1))
+        room.add_inside_wall(True, 0.01, 0.4, (0.6, 0.5))
 
         room.generate_room()
 

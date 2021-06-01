@@ -109,7 +109,7 @@ register(
 )
 
 register(
-    id="WalkRoomGoal-v0",
+    id="WalkRoomGoalLvl1-v0",
     entry_point="stanford_quad.envs:WalkRoomGoal",
     kwargs={
         "debug": True,
@@ -118,9 +118,105 @@ register(
         "incremental_action": False,
         "action_scaling": default_action_scaling,
         "action_smoothing": 1,
-        "random_rot": (0, 0, random_rot),
+        "random_rot": (0, 0, 360),
         "gait_factor": default_gait_fact,
         "control_freq": default_ctrl_freq,
+        "with_arm": False
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
+
+
+register(
+    id="WalkRoomGoalLvl2-v0",
+    entry_point="stanford_quad.envs:WalkRoomGoal",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, 360),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+        "with_arm": False,
+        "inside_walls":True
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
+
+register(
+    id="RoomGoalReachLvl1-v0",
+    entry_point="stanford_quad.envs:RoomGoalReach",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, 360),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+        "with_arm": True
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
+
+register(
+    id="RoomGoalReachLvl2-v0",
+    entry_point="stanford_quad.envs:RoomGoalReach",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, 360),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+        "with_arm": True,
+        "inside_walls":True
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
+
+register(
+    id="WalkRoomGoalVisualLvl2-v0",
+    entry_point="stanford_quad.envs:WalkRoomGoalVisual",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, 360),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+        "with_arm": True,
+        "inside_walls":True
+    },
+    max_episode_steps=default_second_of_sim * default_ctrl_freq,
+)
+
+register(
+    id="TwoRoomsLvl3-v0",
+    entry_point="stanford_quad.envs:TwoRooms",
+    kwargs={
+        "debug": True,
+        "steps": default_second_of_sim * default_ctrl_freq,
+        "relative_action": True,
+        "incremental_action": False,
+        "action_scaling": default_action_scaling,
+        "action_smoothing": 1,
+        "random_rot": (0, 0, 360),
+        "gait_factor": default_gait_fact,
+        "control_freq": default_ctrl_freq,
+        "with_arm": True,
+        "inside_walls":True
     },
     max_episode_steps=default_second_of_sim * default_ctrl_freq,
 )

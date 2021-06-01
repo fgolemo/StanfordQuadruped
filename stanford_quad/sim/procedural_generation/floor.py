@@ -47,6 +47,17 @@ class Floor:
     def get_full_z_size(self):
         return self.size[2] * 2
 
+    def get_world_pos(self, x, y):
+        """
+        :param x: x floor relative pos between 0 and 1
+        :param y: y floor relative pos between 0 and 1
+        :return: [x, y , z] world coordinates.
+        """
+        object_world_x_pos = self.pos[0] - self.get_half_x_size() + x * self.get_full_x_size()
+        object_world_y_pos = self.pos[1] - self.get_half_y_size() + y * self.get_full_y_size()
+        object_world_z_pos = self.get_half_z_size()
+        return [object_world_x_pos, object_world_y_pos, object_world_z_pos]
+
     def put_on(self, object_uid, floor_x_pos, floor_y_pos, half_height_object):
         """
         Place an object on the floor based on the relative floor position.
@@ -56,11 +67,8 @@ class Floor:
         :param float object_height: TODO: find it automatically in the future.
         """
         # Floor relative pos to world pos
-        object_world_x_pos = self.pos[0] - self.get_half_x_size() + floor_x_pos * self.get_full_x_size()
-        object_world_y_pos = self.pos[1] - self.get_half_y_size() + floor_y_pos * self.get_full_y_size()
-        object_world_z_pos = self.get_half_z_size() + half_height_object
-        new_object_pos = [object_world_x_pos, object_world_y_pos, object_world_z_pos]
-
+        new_object_pos = self.get_world_pos(floor_x_pos, floor_y_pos)
+        new_object_pos[2] = new_object_pos[2] + half_height_object
         # get original object orientation
         _, object_orn = self.p.getBasePositionAndOrientation(object_uid)
         self.p.resetBasePositionAndOrientation(object_uid, new_object_pos, object_orn)

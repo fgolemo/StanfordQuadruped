@@ -27,6 +27,7 @@ class PupperBase(gym.Env):
         reward_coefficients=(0.1, 1, 0),
         stop_on_flip=False,
         gait_factor=0.0,
+        with_arm=False,
     ):
         """ Gym-compatible environment to teach the pupper how to walk
         
@@ -61,7 +62,7 @@ class PupperBase(gym.Env):
         # if relative_action: # if this is turned on, the robot is underpowered for the hardcoded gait
         #     kwargs = {"gain_pos": 1 / 16, "gain_vel": 1 / 8, "max_torque": 1 / 2}
 
-        self.sim = PupperSim2(debug=debug, start_standing=False, **kwargs)
+        self.sim = PupperSim2(debug=debug, start_standing=False, with_arm=with_arm, **kwargs)
         self.episode_steps = 0
         self.episode_steps_max = steps
         self.control_freq = control_freq
@@ -89,6 +90,9 @@ class PupperBase(gym.Env):
     def reset(self):
         self.episode_steps = 0
 
+        # both when the action formulation is incremental and when it's relative, we need to start standing
+        self.sim.reset(rest=True)  # also stand up the robot
+
         # Add elements in our environment
         self._reset_simulation_env()
 
@@ -101,8 +105,7 @@ class PupperBase(gym.Env):
         return self._get_obs()
 
     def _reset_simulation_env(self):
-        # both when the action formulation is incremental and when it's relative, we need to start standing
-        self.sim.reset(rest=True)  # also stand up the robot
+        pass
 
     def seed(self, seed=None):
         np.random.seed(seed)
